@@ -1,11 +1,9 @@
 function start() {
-	player = playerSelect.value;
-
-	if (player === X) {
-		computer = O;
+	if (playerSelect.value === X) {
+		turn = 0;
 	}
-	else if (player === O) {
-		computer = X;
+	else if (playerSelect.value === O) {
+		turn = 1;
 	}
 
 	let table = document.createElement("table");
@@ -18,7 +16,7 @@ function start() {
 	section.appendChild(table);
 	section.appendChild(btnReset);
 	section.appendChild(btnBack);
-	p0.textContent = `É a vez do jogador ${player}.`;
+	p0.textContent = `É a vez do jogador ${player[turn]}.`;
 	p1.style.display = "none";
 	table.style.margin = "5% auto";
 	table.style.textAlign = "center";
@@ -64,20 +62,24 @@ function start() {
 }
 
 function reset() {
-	game = {
-		"velha": [
-			[blank, blank, blank],
-			[blank, blank, blank],
-			[blank, blank, blank]
-		]
-	};
-	player = playerSelect.value;
+	board = [
+		[blank, blank, blank],
+		[blank, blank, blank],
+		[blank, blank, blank]
+	];
+
+	if (playerSelect.value === X) {
+		turn = 0;
+	}
+	else if (playerSelect.value === O) {
+		turn = 1;
+	}
 
 	let p0 = document.getElementsByTagName("p")[0];
 	let btnReset = document.getElementsByTagName("button")[1];
 	let td = document.getElementsByTagName("td");
 
-	p0.textContent = `É a vez do jogador ${player}.`;
+	p0.textContent = `É a vez do jogador ${player[turn]}.`;
 	btnReset.style.color = "initial";
 
 	for (let i = 0; i <= 8; i++) {
@@ -86,13 +88,11 @@ function reset() {
 }
 
 function back() {
-	game = {
-		"velha": [
-			[blank, blank, blank],
-			[blank, blank, blank],
-			[blank, blank, blank]
-		]
-	};
+	board = [
+		[blank, blank, blank],
+		[blank, blank, blank],
+		[blank, blank, blank]
+	];
 	playerSelect.value = X;
 
 	let btnReset = document.getElementsByTagName("button")[1];
@@ -111,44 +111,45 @@ function back() {
 
 function checkWinner() {
 	if (
-		(game.velha[0][0] === X && game.velha[0][1] === X && game.velha[0][2] === X) ||
-		(game.velha[1][0] === X && game.velha[1][1] === X && game.velha[1][2] === X) ||
-		(game.velha[2][0] === X && game.velha[2][1] === X && game.velha[2][2] === X) ||
-		(game.velha[0][0] === X && game.velha[1][0] === X && game.velha[2][0] === X) ||
-		(game.velha[0][1] === X && game.velha[1][1] === X && game.velha[2][1] === X) ||
-		(game.velha[0][2] === X && game.velha[1][2] === X && game.velha[2][2] === X) ||
-		(game.velha[0][0] === X && game.velha[1][1] === X && game.velha[2][2] === X) ||
-		(game.velha[0][2] === X && game.velha[1][1] === X && game.velha[2][0] === X)
+		board[0][0] === X && board[0][1] === X && board[0][2] === X ||
+		board[1][0] === X && board[1][1] === X && board[1][2] === X ||
+		board[2][0] === X && board[2][1] === X && board[2][2] === X ||
+		board[0][0] === X && board[1][0] === X && board[2][0] === X ||
+		board[0][1] === X && board[1][1] === X && board[2][1] === X ||
+		board[0][2] === X && board[1][2] === X && board[2][2] === X ||
+		board[0][0] === X && board[1][1] === X && board[2][2] === X ||
+		board[0][2] === X && board[1][1] === X && board[2][0] === X
 	) {
 		return 1;
 	}
 	else if (
-		(game.velha[0][0] === O && game.velha[0][1] === O && game.velha[0][2] === O) ||
-		(game.velha[1][0] === O && game.velha[1][1] === O && game.velha[1][2] === O) ||
-		(game.velha[2][0] === O && game.velha[2][1] === O && game.velha[2][2] === O) ||
-		(game.velha[0][0] === O && game.velha[1][0] === O && game.velha[2][0] === O) ||
-		(game.velha[0][1] === O && game.velha[1][1] === O && game.velha[2][1] === O) ||
-		(game.velha[0][2] === O && game.velha[1][2] === O && game.velha[2][2] === O) ||
-		(game.velha[0][0] === O && game.velha[1][1] === O && game.velha[2][2] === O) ||
-		(game.velha[0][2] === O && game.velha[1][1] === O && game.velha[2][0] === O)
+		board[0][0] === O && board[0][1] === O && board[0][2] === O ||
+		board[1][0] === O && board[1][1] === O && board[1][2] === O ||
+		board[2][0] === O && board[2][1] === O && board[2][2] === O ||
+		board[0][0] === O && board[1][0] === O && board[2][0] === O ||
+		board[0][1] === O && board[1][1] === O && board[2][1] === O ||
+		board[0][2] === O && board[1][2] === O && board[2][2] === O ||
+		board[0][0] === O && board[1][1] === O && board[2][2] === O ||
+		board[0][2] === O && board[1][1] === O && board[2][0] === O
 	) {
 		return -1;
 	}
 	else if (
-		game.velha[0][0] !== blank && game.velha[0][1] !== blank && game.velha[0][2] !== blank &&
-		game.velha[1][0] !== blank && game.velha[1][1] !== blank && game.velha[1][2] !== blank &&
-		game.velha[2][0] !== blank && game.velha[2][1] !== blank && game.velha[2][2] !== blank
+		board[0][0] !== blank && board[0][1] !== blank && board[0][2] !== blank &&
+		board[1][0] !== blank && board[1][1] !== blank && board[1][2] !== blank &&
+		board[2][0] !== blank && board[2][1] !== blank && board[2][2] !== blank
 	) {
 		return "Velha";
 	}
+
 	return false;
 }
 
 function events(line, column, event) {
-	let cell;
-	let result = checkWinner();
+	let winner = checkWinner();
 	let p0 = document.getElementsByTagName("p")[0];
 	let btnReset = document.getElementsByTagName("button")[1];
+	let cell;
 
 	if (line === 0) {
 		cell = document.getElementsByTagName("td")[column];
@@ -156,72 +157,62 @@ function events(line, column, event) {
 	else if (line === 1) {
 		cell = document.getElementsByTagName("td")[column + 3];
 	}
-	else {
+	else if (line === 2) {
 		cell = document.getElementsByTagName("td")[column + 6];
 	}
 
 	// Event mouseover
-	if (event === 0 && game.velha[line][column] === blank && !result) {
-		if (player === X) {
+	if (event === 0 && board[line][column] === blank && !winner) {
+		if (player[turn] === X) {
 			cell.textContent = X;
 		}
-		else if (player === O) {
+		else if (player[turn] === O) {
 			cell.textContent = O;
 		}
 		cell.style.color = "#c334";
 	}
 	// Event mouseout
-	else if (event === 1 && game.velha[line][column] === blank && !result) {
+	else if (event === 1 && board[line][column] === blank && !winner) {
 		cell.textContent = "";
 	}
 	// Event click
-	else if (event === 2 && game.velha[line][column] === blank && !result) {
-		if (player === X) {
-			cell.textContent = player;
-			game.velha[line][column] = player;
-			player = O;
-		}
-		else if (player === O) {
-			cell.textContent = player;
-			game.velha[line][column] = player;
-			player = X;
-		}
-
+	else if (event === 2 && board[line][column] === blank && !winner) {
+		board[line][column] = player[turn];
+		cell.textContent = player[turn];
 		cell.style.color = "initial";
+		turn = (turn + 1) % 2;
 	}
 
-	result = checkWinner();
+	winner = checkWinner();
 
-	if (result) {
-		if (result === 1) {
+	if (winner) {
+		if (winner === 1) {
 			p0.textContent = "O Jogador X ganhou!";
 		}
-		else if (result === -1) {
+		else if (winner === -1) {
 			p0.textContent = "O Jogador O ganhou!";
 		}
-		else if (result === "Velha") {
+		else if (winner === "Velha") {
 			p0.textContent = "Deu Velha!";
 		}
 		btnReset.style.color = "red";
 	}
 	else {
-		p0.textContent = `É a vez do jogador ${player}.`;
+		p0.textContent = `É a vez do jogador ${player[turn]}.`;
 	}
 }
 
 const blank = " ";
 const X = "X";
 const O = "O";
-let game = {
-	"velha": [
-		[blank, blank, blank],
-		[blank, blank, blank],
-		[blank, blank, blank]
-	]
-};
+const player = [X, O];
+let turn;
+let board = [
+	[blank, blank, blank],
+	[blank, blank, blank],
+	[blank, blank, blank]
+];
 let playerSelect = document.getElementsByTagName("select")[0];
-let player;
-let computer;
 document.getElementsByTagName("button")[0].addEventListener("click", function () {
 	start();
 });

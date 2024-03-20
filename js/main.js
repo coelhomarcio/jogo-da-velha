@@ -145,6 +145,105 @@ function checkWinner() {
 	return false;
 }
 
+function getOdds(board) {
+	let odds = [];
+
+	for (let i in board) {
+		for (let j in board[i]) {
+			if (board[i][j] === blank) {
+				odds.push([+i, +j]);
+			}
+		}
+	}
+
+	return odds;
+}
+
+function nextPlay(board, turn) {
+	let winner = checkWinner();
+
+	if (winner) {
+		if (winner === "Velha") {
+			return 0;
+		}
+		else {
+			return winner;
+		}
+	}
+
+	turn = (turn + 1) % 2;
+	let odds = getOdds(board);
+	let value;
+	let bestValue = null;
+
+	for (let odd of odds) {
+		board[odd[0]][odd[1]] = player[turn];
+		value = nextPlay(board, turn);
+		board[odd[0]][odd[1]] = blank;
+
+		if (bestValue === null) {
+			bestValue = value;
+		}
+		else if (turn === 0) {
+			if (value > bestValue) {
+				bestValue = value;
+			}
+		}
+		else if (turn === 1) {
+			if (value < bestValue) {
+				bestValue = value;
+			}
+		}
+	}
+
+	return bestValue;
+}
+
+function computerPlay(board, turn) {
+	let odds = getOdds(board);
+	let value;
+	let bestValue = null;
+	let play;
+	let cell;
+
+	for (let odd of odds) {
+		board[odd[0]][odd[1]] = player[turn];
+		value = nextPlay(board, turn);
+		board[odd[0]][odd[1]] = blank;
+
+		if (bestValue === null) {
+			bestValue = value;
+			play = odd;
+		}
+		else if (turn === 0) {
+			if (value > bestValue) {
+				bestValue = value;
+				play = odd;
+			}
+		}
+		else if (turn === 1) {
+			if (value < bestValue) {
+				bestValue = value;
+				play = odd;
+			}
+		}
+	}
+
+	if (play[0] === 0) {
+		cell = document.getElementsByTagName("td")[play[1]];
+	}
+	else if (play[0] === 1) {
+		cell = document.getElementsByTagName("td")[play[1] + 3];
+	}
+	else if (play[0] === 2) {
+		cell = document.getElementsByTagName("td")[play[1] + 6];
+	}
+
+	board[play[0]][play[1]] = player[turn];
+	cell.textContent = player[turn];
+	cell.style.color = "initial";
+}
+
 function events(line, column, event) {
 	let winner = checkWinner();
 	let p0 = document.getElementsByTagName("p")[0];
@@ -180,7 +279,10 @@ function events(line, column, event) {
 		board[line][column] = player[turn];
 		cell.textContent = player[turn];
 		cell.style.color = "initial";
-		turn = (turn + 1) % 2;
+
+		if (!checkWinner()) {
+			computerPlay(board, (turn + 1) % 2);
+		}
 	}
 
 	winner = checkWinner();

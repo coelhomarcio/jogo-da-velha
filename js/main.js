@@ -59,6 +59,10 @@ function start() {
 			}
 		}
 	}
+
+	if (turn === 1) {
+		computerPlay(board, (turn + 1) % 2);
+	}
 }
 
 function reset() {
@@ -84,6 +88,10 @@ function reset() {
 
 	for (let i = 0; i <= 8; i++) {
 		td[i].textContent = "";
+	}
+
+	if (turn === 1) {
+		computerPlay(board, (turn + 1) % 2);
 	}
 }
 
